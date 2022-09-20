@@ -116,4 +116,22 @@ public class UnitTest1
         var sources = preprocessor.GetSources();
         Assert.AreEqual(2, sources.Count);
     }
+    
+    [TestMethod]
+    public void LowercaseScriptWithDashesInName()
+    {
+        var sourceFile = "Samples/lowercase-script.fsx";
+        var preprocessor = new FsxPreprocessor()
+            .WithBasePath("HomeDirectory");
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        // we expect module name of test in lowercase should be in pascal case
+        Assert.AreEqual("module Testscript" + Environment.NewLine + "open System" + Environment.NewLine + "let testScript() = Console.WriteLine 1", preprocessor.GetSources()[0].ReadProducedFile());
+        // we expect module name of test in kebabcase should be escaped correctly
+        Assert.AreEqual("module ``lowercase-script``" + Environment.NewLine + "open Testscript" + Environment.NewLine + "testScript()", preprocessor.GetSources()[1].ReadProducedFile());
+        var sources = preprocessor.GetSources();
+        Assert.AreEqual(2, sources.Count);
+    }
 }
