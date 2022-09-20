@@ -6,7 +6,7 @@ public class UnitTest1
     [TestMethod]
     public void PassthroughFileContent()
     {
-        var sourceFile = "Samples\\PlainFsharp.fsx";
+        var sourceFile = "Samples/PlainFsharp.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -18,7 +18,7 @@ public class UnitTest1
     [TestMethod]
     public void HelpCommand()
     {
-        var sourceFile = "Samples\\HelpCommand.fsx";
+        var sourceFile = "Samples/HelpCommand.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -30,7 +30,7 @@ public class UnitTest1
     [TestMethod]
     public void TimeCommands()
     {
-        var sourceFile = "Samples\\TimeCommands.fsx";
+        var sourceFile = "Samples/TimeCommands.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -42,7 +42,7 @@ public class UnitTest1
     [TestMethod]
     public void QuitCommand()
     {
-        var sourceFile = "Samples\\QuitCommand.fsx";
+        var sourceFile = "Samples/QuitCommand.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -54,7 +54,7 @@ public class UnitTest1
     [TestMethod]
     public void ResolveReferences()
     {
-        var sourceFile = "Samples\\RegularReference.fsx";
+        var sourceFile = "Samples/RegularReference.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -69,7 +69,7 @@ public class UnitTest1
     [TestMethod]
     public void NugetPackageWithoutVersion()
     {
-        var sourceFile = "Samples\\NugetLastVersion.fsx";
+        var sourceFile = "Samples/NugetLastVersion.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -87,7 +87,7 @@ public class UnitTest1
     [TestMethod]
     public void NugetPackageWithExplicitVersion()
     {
-        var sourceFile = "Samples\\NugetExplicitVersion.fsx";
+        var sourceFile = "Samples/NugetExplicitVersion.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
@@ -105,7 +105,7 @@ public class UnitTest1
     [TestMethod]
     public void LoadFile()
     {
-        var sourceFile = "Samples\\LoadFile.fsx";
+        var sourceFile = "Samples/LoadFile.fsx";
         var preprocessor = new FsxPreprocessor()
             .WithBasePath("HomeDirectory");
         preprocessor.AddSource(sourceFile);
