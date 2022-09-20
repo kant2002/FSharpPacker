@@ -25,6 +25,10 @@ var packageReferences = preprocessor.GetPackageReferences();
 var packageReferencesList = string.Join(
   Environment.NewLine, 
   packageReferences.Select(pr => $"{($"<PackageReference Include=\"{pr.Name}\" Version=\"{pr.Version}\" />")}"));
+var references = preprocessor.GetReferences();
+var referencesList = string.Join(
+  Environment.NewLine, 
+  references.Select(pr => $"{($"<Reference Include=\"{Path.GetFileNameWithoutExtension(pr)}\"><HintPath>{pr}</HintPath></Reference>")}"));
 var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
@@ -34,6 +38,10 @@ var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
 
   <ItemGroup>
     {packageReferencesList}
+  </ItemGroup>
+
+  <ItemGroup>
+    {referencesList}
   </ItemGroup>
 
   <ItemGroup>
