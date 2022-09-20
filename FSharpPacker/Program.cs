@@ -2,6 +2,7 @@
 using FSharpPacker;
 
 var sourceFile = args[0];
+var targetFramework = "net6.0";
 var preprocessor = new FsxPreprocessor()
     .WithBasePath("HomeDirectory");
 preprocessor.AddSource(sourceFile);
@@ -33,7 +34,7 @@ var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>{targetFramework}</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
