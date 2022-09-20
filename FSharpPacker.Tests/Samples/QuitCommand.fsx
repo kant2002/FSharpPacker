@@ -1,0 +1,2 @@
+﻿printfn "Hello, world"
+#quit

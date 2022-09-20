@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpPacker", "FSharpPacker\FSharpPacker.csproj", "{95C8A061-7641-4DC7-BBAA-8BB9E3C11D58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpPacker.Tests", "FSharpPacker.Tests\FSharpPacker.Tests.csproj", "{0F8BDD37-4B22-43C3-910C-B3A3DDABEDAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95C8A061-7641-4DC7-BBAA-8BB9E3C11D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95C8A061-7641-4DC7-BBAA-8BB9E3C11D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95C8A061-7641-4DC7-BBAA-8BB9E3C11D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95C8A061-7641-4DC7-BBAA-8BB9E3C11D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F8BDD37-4B22-43C3-910C-B3A3DDABEDAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F8BDD37-4B22-43C3-910C-B3A3DDABEDAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F8BDD37-4B22-43C3-910C-B3A3DDABEDAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F8BDD37-4B22-43C3-910C-B3A3DDABEDAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
