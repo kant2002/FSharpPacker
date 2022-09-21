@@ -61,6 +61,11 @@ public class FsxPreprocessor
                 {
                     sourceFile.WriteLine("System.Environment.Exit 0");
                 }
+                else if (normalizedLine.StartsWith("#I"))
+                {
+                    var pathStrings = normalizedLine.Replace("#I ", string.Empty);
+                    sourceFile.AddIncludePaths(ParsePaths(pathStrings));
+                }
                 else if (normalizedLine.StartsWith("#load"))
                 {
                     var pathStrings = normalizedLine.Replace("#load ", string.Empty);

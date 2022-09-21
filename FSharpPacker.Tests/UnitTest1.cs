@@ -59,7 +59,7 @@ public class UnitTest1
         Assert.AreEqual("module RegularReference" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var assemblies = preprocessor.GetReferences();
         Assert.AreEqual(1, assemblies.Count);
-        Assert.AreEqual(Path.GetFullPath("test.dll"), assemblies[0]);
+        Assert.AreEqual(Path.GetFullPath("Samples/fake_dll.fsx"), assemblies[0]);
     }
     [TestMethod]
     public void NugetPackageWithoutVersion()
@@ -138,5 +138,18 @@ public class UnitTest1
         Assert.AreEqual("module Testscript" + Environment.NewLine + "open System" + Environment.NewLine + "let testScript() = Console.WriteLine 1" + Environment.NewLine, sources[0].ReadProducedFile());
         // we expect module name of test in kebabcase should be escaped correctly
         Assert.AreEqual("module ``lowercase-script``" + Environment.NewLine + "open Testscript" + Environment.NewLine + "testScript()" + Environment.NewLine, sources[1].ReadProducedFile());
+    }
+    [TestMethod]
+    public void IncludePath()
+    {
+        var sourceFile = "Samples/IncludePath.fsx";
+        var preprocessor = new FsxPreprocessor();
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual("module IncludePath" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+        var sources = preprocessor.GetSources();
+        Assert.AreEqual(2, sources.Count);
     }
 }

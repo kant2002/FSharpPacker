@@ -1,2 +1,2 @@
-﻿#r "../test.dll"
+﻿#r "fake_dll.fsx"
 printfn "Hello, world"
