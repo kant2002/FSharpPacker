@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 
 namespace FSharpPacker;
+
 using NugetReference = fsharp::Packer.NugetReference;
 using SourceFile = fsharp::Packer.SourceFile;
 
@@ -40,19 +41,22 @@ public class FsxPreprocessor
             {
                 if (normalizedLine.StartsWith("#r"))
                 {
-                    var path = Unquote(normalizedLine.Replace("#r ", string.Empty));
-                    var normalizedReference = Regex.Replace(path, "\\s+nuget\\s+:\\s+", "nuget:");
-                    if (normalizedReference.StartsWith("nuget:"))
+                    var pathStrings = normalizedLine.Replace("#r ", string.Empty);
+                    foreach (var path in ParsePaths(pathStrings))
                     {
-                        var packageParts = normalizedReference.Substring("nuget:".Length).Split(',');
-                        var name = packageParts[0].Trim();
-                        var version = packageParts.ElementAtOrDefault(1)?.Trim() ?? "*";
-                        this.packageReferences.Add(new(name, version));
-                    }
-                    else
-                    {
-                        var relativeReferencePath = sourceFile.ResolveRelativePath(path);
-                        this.references.Add(Path.GetFullPath(relativeReferencePath));
+                        var normalizedReference = Regex.Replace(path, "\\s+nuget\\s+:\\s+", "nuget:");
+                        if (normalizedReference.StartsWith("nuget:"))
+                        {
+                            var packageParts = normalizedReference.Substring("nuget:".Length).Split(',');
+                            var name = packageParts[0].Trim();
+                            var version = packageParts.ElementAtOrDefault(1)?.Trim() ?? "*";
+                            this.packageReferences.Add(new(name, version));
+                        }
+                        else
+                        {
+                            var relativeReferencePath = sourceFile.ResolveRelativePath(path);
+                            this.references.Add(Path.GetFullPath(relativeReferencePath));
+                        }
                     }
                 }
                 else if (normalizedLine.StartsWith("#help"))
@@ -89,34 +93,9 @@ public class FsxPreprocessor
         }
     }
 
-    private static IEnumerable<string> ParsePaths(string paths)
-    {
-        foreach (var m in Regex.Matches(paths, "(\"|')(?:\\\\\\1|[^\\1])*?\\1").OfType<Match>())
-        {
-            yield return Unquote(m.Value);
-        }
-    }
+    private static IEnumerable<string> ParsePaths(string paths) => fsharp::Packer.ParsePaths(paths);
 
-    private static string GetModuleName(SourceFile sourceFile)
-    {
-        string fileName = Path.GetFileNameWithoutExtension(sourceFile.FileName);
-        if (!Regex.IsMatch(fileName, "^[_a-zA-Z][_a-zA-Z0-9]{0,30}$"))
-        {
-            return "``" + fileName + "``";
-        }
-
-        if (char.IsLower(fileName[0]))
-        {
-            return char.ToUpper(fileName[0]) + fileName.Substring(1);
-        }
-
-        return fileName;
-    }
-
-    private static string Unquote(string data)
-    {
-        return data.Trim('"');
-    }
+    private static string GetModuleName(SourceFile sourceFile) => fsharp::Packer.GetModuleName(sourceFile);
 
     public string GetSource(string mainFsx)
     {

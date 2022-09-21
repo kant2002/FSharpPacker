@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open System.Text.RegularExpressions
 
 printfn "Hello from F#"
 
@@ -50,3 +51,29 @@ type public SourceFile(fileName: string, reader: TextReader) = class
     }
 
 end
+
+let public GetModuleName (sourceFile: SourceFile) =
+    let fileName = Path.GetFileNameWithoutExtension(sourceFile.FileName)
+    let isIdentifier = Regex.IsMatch (fileName, "^[_a-zA-Z][_a-zA-Z0-9]{0,30}$")
+    if not isIdentifier
+        then "``" + fileName + "``"
+        else if Char.IsLower(fileName[0]) then Char.ToUpper(fileName[0]).ToString() + fileName.Substring(1)
+        else fileName
+
+type public FsxProgramState = {
+    mutable sourceFiles: seq<SourceFile>;
+    mutable references: seq<string>;
+    mutable packageReferences: seq<NugetReference>;
+}
+
+let public AddSource state sourceFile (content: string) =
+    let m = Seq.append state.sourceFiles [new SourceFile(sourceFile, content)]
+    { state with sourceFiles = m }
+
+let public AddSourceFromFile state sourceFile =
+    AddSource state sourceFile (File.ReadAllText(sourceFile))
+
+let Unquote (data: string) = data.Trim('"')
+
+let public ParsePaths paths =
+    Regex.Matches(paths, "(\"|')(?:\\\\\\1|[^\\1])*?\\1") |> Seq.map (fun x -> Unquote x.Value)
