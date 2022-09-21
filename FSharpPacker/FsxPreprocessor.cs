@@ -37,7 +37,7 @@ public class FsxPreprocessor
 
     private void ProcessFile(SourceFile sourceFile)
     {
-        sourceFile.WriteLine($"module {Path.GetFileNameWithoutExtension(sourceFile.FileName)}");
+        sourceFile.WriteLine($"module {GetModuleName(sourceFile)}");
         foreach (var line in sourceFile.ReadContent())
         {
             var normalizedLine = Regex.Replace(line, "\\s+\\#\\s+", "#");
@@ -52,7 +52,7 @@ public class FsxPreprocessor
                         var packageParts = normalizedReference.Substring("nuget:".Length).Split(',');
                         var name = packageParts[0].Trim();
                         var version = packageParts.ElementAtOrDefault(1)?.Trim() ?? "*";
-                        this.packageReferences.Add(new (name, version));
+                        this.packageReferences.Add(new(name, version));
                     }
                     else
                     {
@@ -85,6 +85,22 @@ public class FsxPreprocessor
                 sourceFile.WriteLine(line);
             }
         }
+    }
+
+    private static string GetModuleName(SourceFile sourceFile)
+    {
+        string fileName = Path.GetFileNameWithoutExtension(sourceFile.FileName);
+        if (!Regex.IsMatch(fileName, "^[_a-zA-Z][_a-zA-Z0-9]{0,30}$"))
+        {
+            return "``" + fileName + "``";
+        }
+
+        if (char.IsLower(fileName[0]))
+        {
+            return char.ToUpper(fileName[0]) + fileName.Substring(1);
+        }
+
+        return fileName;
     }
 
     private string Unquote(string data)
