@@ -127,11 +127,11 @@ public class UnitTest1
 
         preprocessor.Process();
 
-        // we expect module name of test in lowercase should be in pascal case
-        Assert.AreEqual("module Testscript" + Environment.NewLine + "open System" + Environment.NewLine + "let testScript() = Console.WriteLine 1", preprocessor.GetSources()[0].ReadProducedFile());
-        // we expect module name of test in kebabcase should be escaped correctly
-        Assert.AreEqual("module ``lowercase-script``" + Environment.NewLine + "open Testscript" + Environment.NewLine + "testScript()", preprocessor.GetSources()[1].ReadProducedFile());
         var sources = preprocessor.GetSources();
         Assert.AreEqual(2, sources.Count);
+        // we expect module name of test in lowercase should be in pascal case
+        Assert.AreEqual("module Testscript" + Environment.NewLine + "open System" + Environment.NewLine + "let testScript() = Console.WriteLine 1" + Environment.NewLine, sources[0].ReadProducedFile());
+        // we expect module name of test in kebabcase should be escaped correctly
+        Assert.AreEqual("module ``lowercase-script``" + Environment.NewLine + "open Testscript" + Environment.NewLine + "testScript()" + Environment.NewLine, sources[1].ReadProducedFile());
     }
 }

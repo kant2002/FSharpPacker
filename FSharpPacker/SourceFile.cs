@@ -22,7 +22,7 @@ public class SourceFile
 
     public string FileName { get; }
 
-    public string ReadLine()
+    public string? ReadLine()
     {
         return this.reader.ReadLine();
     }

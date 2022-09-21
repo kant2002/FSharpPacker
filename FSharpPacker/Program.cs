@@ -52,6 +52,8 @@ var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
 </Project>
 ";
 File.WriteAllText(tempProject, projectContent);
-Console.WriteLine(tempProject);
-var process = Process.Start("dotnet", (new [] { "publish", tempProject }).Union(args.Skip(1)));
+Console.WriteLine($"Compiling generated file {tempProject}");
+var commandLineArguments = (new[] { "publish", tempProject }).Union(args.Skip(1));
+Console.WriteLine($"Running dotnet {string.Join(" ", commandLineArguments)}");
+var process = Process.Start("dotnet", commandLineArguments);
 process.WaitForExit();
