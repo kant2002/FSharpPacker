@@ -30,11 +30,13 @@ var references = preprocessor.GetReferences();
 var referencesList = string.Join(
   Environment.NewLine, 
   references.Select(pr => $"{($"<Reference Include=\"{Path.GetFileNameWithoutExtension(pr)}\"><HintPath>{pr}</HintPath></Reference>")}"));
+var defineInteractive = true;
 var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
     <OutputType>Exe</OutputType>
     <TargetFramework>{targetFramework}</TargetFramework>
+    {(defineInteractive ? "<DefineConstants>$(DefineConstants);INTERACTIVE</DefineConstants>" : string.Empty)}
   </PropertyGroup>
 
   <ItemGroup>
