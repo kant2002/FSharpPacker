@@ -30,7 +30,7 @@ public class FsxPreprocessor
     {
         foreach (var sourceFile in sourceFiles.ToList())
         {
-            Console.WriteLine(sourceFile.FileName);
+            Console.WriteLine($"Processing {sourceFile.FileName}");
             ProcessFile(sourceFile);
         }
     }
@@ -71,19 +71,29 @@ public class FsxPreprocessor
                 }
                 else if (normalizedLine.StartsWith("#load"))
                 {
-                    var path = Unquote(normalizedLine.Replace("#load ", string.Empty));
-                    var relativeReferencePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(sourceFile.FileName)), path);
-                    Console.WriteLine(relativeReferencePath);
-                    var innerFile = new SourceFile(relativeReferencePath);
-                    this.sourceFiles.Insert(0, innerFile);
-                    ProcessFile(innerFile);
-                    // sourceFile.WriteLine(innerFile.ReadProducedFile());
+                    var pathStrings = normalizedLine.Replace("#load ", string.Empty);
+                    foreach (var path in ParsePaths(pathStrings))
+                    {
+                        var relativeReferencePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(sourceFile.FileName)), path);
+                        Console.WriteLine($"Including {relativeReferencePath}");
+                        var innerFile = new SourceFile(relativeReferencePath);
+                        this.sourceFiles.Insert(0, innerFile);
+                        ProcessFile(innerFile);
+                    }
                 }
             }
             else
             {
                 sourceFile.WriteLine(line);
             }
+        }
+    }
+
+    private static IEnumerable<string> ParsePaths(string paths)
+    {
+        foreach (var m in Regex.Matches(paths, "(\"|')(?:\\\\\\1|[^\\1])*?\\1").OfType<Match>())
+        {
+            yield return Unquote(m.Value);
         }
     }
 
@@ -103,7 +113,7 @@ public class FsxPreprocessor
         return fileName;
     }
 
-    private string Unquote(string data)
+    private static string Unquote(string data)
     {
         return data.Trim('"');
     }

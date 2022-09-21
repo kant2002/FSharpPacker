@@ -116,7 +116,22 @@ public class UnitTest1
         var sources = preprocessor.GetSources();
         Assert.AreEqual(2, sources.Count);
     }
-    
+
+    [TestMethod]
+    public void MultipleLoadFile()
+    {
+        var sourceFile = "Samples/MultipleLoadFile.fsx";
+        var preprocessor = new FsxPreprocessor()
+            .WithBasePath("HomeDirectory");
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual("module MultipleLoadFile" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+        var sources = preprocessor.GetSources();
+        Assert.AreEqual(3, sources.Count);
+    }
+
     [TestMethod]
     public void LowercaseScriptWithDashesInName()
     {
