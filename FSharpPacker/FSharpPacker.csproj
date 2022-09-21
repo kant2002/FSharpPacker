@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -6,5 +6,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="NugetReference.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FSharpPacker.FSharp\FSharpPacker.FSharp.fsproj">
+        <Aliases>fsharp</Aliases>
+      </ProjectReference>
+    </ItemGroup>
 
 </Project>

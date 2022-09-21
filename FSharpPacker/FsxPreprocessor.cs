@@ -1,6 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿extern alias fsharp;
+using System.Text.RegularExpressions;
 
 namespace FSharpPacker;
+using NugetReference = fsharp::Packer.NugetReference;
 
 public class FsxPreprocessor
 {

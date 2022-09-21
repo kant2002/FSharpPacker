@@ -8,8 +8,6 @@ preprocessor.AddSource(sourceFile);
 
 preprocessor.Process();
 
-var path = Path.GetTempFileName();
-Console.WriteLine(path);
 var sourceFiles = preprocessor.GetSources();
 var sourceFilesList = string.Join(
   Environment.NewLine, 
@@ -20,7 +18,6 @@ var sourceFilesList = string.Join(
     return $"<Compile Include=\"{tempSource}\" />";
   }));
 
-var tempProject = path + ".fsproj";
 var packageReferences = preprocessor.GetPackageReferences();
 var packageReferencesList = string.Join(
   Environment.NewLine, 
@@ -52,9 +49,14 @@ var projectContent = @$"<Project Sdk=""Microsoft.NET.Sdk"">
 
 </Project>
 ";
+var path = Path.GetTempFileName();
+var tempProject = path + ".fsproj";
 File.WriteAllText(tempProject, projectContent);
+
+var additionalArguments = args.Skip(1);
+
 Console.WriteLine($"Compiling generated file {tempProject}");
-var commandLineArguments = (new[] { "publish", tempProject }).Union(args.Skip(1));
+var commandLineArguments = (new[] { "publish", tempProject }).Union(additionalArguments);
 Console.WriteLine($"Running dotnet {string.Join(" ", commandLineArguments)}");
 var process = Process.Start("dotnet", commandLineArguments);
 process.WaitForExit();
