@@ -22,6 +22,11 @@ public class SourceFile
 
     public string FileName { get; }
 
+    public string ResolveRelativePath(string path)
+    {
+        return Path.Combine(Path.GetDirectoryName(Path.GetFullPath(FileName)), path);
+    }
+
     public string? ReadLine()
     {
         return this.reader.ReadLine();

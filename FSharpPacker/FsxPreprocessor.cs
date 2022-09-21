@@ -4,17 +4,9 @@ namespace FSharpPacker;
 
 public class FsxPreprocessor
 {
-    private string basePath;
-
     private List<SourceFile> sourceFiles = new();
     private List<string> references = new();
     private List<NugetReference> packageReferences = new();
-
-    public FsxPreprocessor WithBasePath(string homedirectory)
-    {
-        basePath = homedirectory;
-        return this;
-    }
 
     public void AddSource(string sourceFile, string content)
     {
@@ -56,7 +48,7 @@ public class FsxPreprocessor
                     }
                     else
                     {
-                        var relativeReferencePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(sourceFile.FileName)), path);
+                        var relativeReferencePath = sourceFile.ResolveRelativePath(path);
                         this.references.Add(Path.GetFullPath(relativeReferencePath));
                     }
                 }
@@ -74,7 +66,7 @@ public class FsxPreprocessor
                     var pathStrings = normalizedLine.Replace("#load ", string.Empty);
                     foreach (var path in ParsePaths(pathStrings))
                     {
-                        var relativeReferencePath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(sourceFile.FileName)), path);
+                        var relativeReferencePath = sourceFile.ResolveRelativePath(path);
                         Console.WriteLine($"Including {relativeReferencePath}");
                         var innerFile = new SourceFile(relativeReferencePath);
                         this.sourceFiles.Insert(0, innerFile);
@@ -120,7 +112,7 @@ public class FsxPreprocessor
 
     public string GetSource(string mainFsx)
     {
-        return sourceFiles.FirstOrDefault(_ => _.FileName == mainFsx).ReadProducedFile();
+        return sourceFiles.First(_ => _.FileName == mainFsx).ReadProducedFile();
     }
 
     public IReadOnlyList<SourceFile> GetSources()

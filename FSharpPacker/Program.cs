@@ -3,8 +3,7 @@ using FSharpPacker;
 
 var sourceFile = args[0];
 var targetFramework = "net6.0";
-var preprocessor = new FsxPreprocessor()
-    .WithBasePath("HomeDirectory");
+var preprocessor = new FsxPreprocessor();
 preprocessor.AddSource(sourceFile);
 
 preprocessor.Process();
