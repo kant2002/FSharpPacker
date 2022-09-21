@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace FSharpPacker;
 using NugetReference = fsharp::Packer.NugetReference;
+using SourceFile = fsharp::Packer.SourceFile;
 
 public class FsxPreprocessor
 {

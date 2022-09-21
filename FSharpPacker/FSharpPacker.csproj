@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="NugetReference.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\FSharpPacker.FSharp\FSharpPacker.FSharp.fsproj">
         <Aliases>fsharp</Aliases>
       </ProjectReference>
