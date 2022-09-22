@@ -4,8 +4,6 @@ open System
 open System.IO
 open System.Text.RegularExpressions
 
-printfn "Hello from F#"
-
 type public NugetReference = {
     Name: string;
     Version: string;
