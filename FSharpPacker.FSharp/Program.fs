@@ -52,7 +52,7 @@ type public SourceFile(fileName: string, reader: TextReader) = class
 
 end
 
-let public GetModuleName (sourceFile: SourceFile) =
+let GetModuleName (sourceFile: SourceFile) =
     let fileName = Path.GetFileNameWithoutExtension(sourceFile.FileName)
     let isIdentifier = Regex.IsMatch (fileName, "^[_a-zA-Z][_a-zA-Z0-9]{0,30}$")
     if not isIdentifier
@@ -75,5 +75,70 @@ let public AddSourceFromFile state sourceFile =
 
 let Unquote (data: string) = data.Trim('"')
 
-let public ParsePaths paths =
+let ParsePaths paths =
     Regex.Matches(paths, "(\"|')(?:\\\\\\1|[^\\1])*?\\1") |> Seq.map (fun x -> Unquote x.Value)
+
+type FsxLine =
+    | SourceCode of string
+    | Unsupported
+    | IncludePath of seq<string>
+    | IncludeFiles of seq<string>
+    | IncludeReference of references: seq<string> * packages: seq<NugetReference>
+
+let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
+    if normalizedLine.StartsWith("#") then 
+        if normalizedLine.StartsWith("#r") then
+            let pathStrings = normalizedLine.Replace("#r ", "")
+            let mutable references: seq<string> = []
+            let mutable packages: seq<NugetReference> = []
+            for path in ParsePaths(pathStrings) do
+                let normalizedReference = Regex.Replace(path, "\\s+nuget\\s+:\\s+", "nuget:")
+                if normalizedReference.StartsWith("nuget:") then
+                    let packageParts = normalizedReference.Substring("nuget:".Length).Split(',')
+                    let package = match packageParts with
+                                    | [| name; version |] -> { Name = name.Trim(); Version = version.Trim() }
+                                    | [| name |] -> { Name = name.Trim(); Version = "*" }
+                                    | _ -> raise (new InvalidOperationException("Incorrect format of nuget package"))
+                    packages <- Seq.append packages [package]
+                else
+                    let relativeReferencePath = sourceFile.ResolveRelativePath(path)
+                    references <- Seq.append references [Path.GetFullPath(relativeReferencePath)]
+                ()
+            IncludeReference(references, packages)
+        elif normalizedLine.StartsWith("#help") then
+            Unsupported
+        elif normalizedLine.StartsWith("#time") then
+            Unsupported
+        elif normalizedLine.StartsWith("#quit") then
+            SourceCode("System.Environment.Exit 0")
+        elif normalizedLine.StartsWith("#I") then
+            let pathStrings = normalizedLine.Replace("#I ", "");
+            IncludePath(ParsePaths(pathStrings))
+        elif normalizedLine.StartsWith("#load") then
+            let pathStrings = normalizedLine.Replace("#load ", "");
+            let files = ParsePaths(pathStrings) |> Seq.map sourceFile.ResolveRelativePath
+            IncludeFiles(files)
+        else
+            SourceCode(normalizedLine)
+    else SourceCode(normalizedLine)
+
+let rec public ProcessLine state sourceFile line =
+    let normalizedLine = Regex.Replace(line, "\\s+\\#\\s+", "#")
+    let lineResult = classifyLine sourceFile normalizedLine
+    match lineResult with
+        | SourceCode(code) -> sourceFile.WriteLine(code)
+        | Unsupported -> ()
+        | IncludePath(files) -> sourceFile.AddIncludePaths(files)
+        | IncludeFiles(files) -> for file in files do
+                                    Console.WriteLine($"Including {file}")
+                                    let innerFile = new SourceFile(file)
+                                    state.sourceFiles <- Seq.append [innerFile] state.sourceFiles
+                                    ProcessFile state innerFile
+        | IncludeReference(references, packages) -> state.references <- Seq.append state.references references
+                                                    state.packageReferences <- Seq.append state.packageReferences packages
+    ()
+
+and public ProcessFile state sourceFile =
+    sourceFile.WriteLine($"module {GetModuleName(sourceFile)}")
+    sourceFile.ReadContent() |> Seq.iter (ProcessLine state sourceFile)
+    ()
