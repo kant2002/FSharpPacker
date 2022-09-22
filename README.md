@@ -14,11 +14,23 @@ I have install broken .NET 7.0. Change csproj and Program.cs and that's it.
 
 For example:
 ```
-cd FSharpPacker
-dotnet run --project FSharpPacker FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test
+test\LoadFile.exe
 ```
 
-for AOT build
+for AOT build (need to hack Program.cs and change to `var targetFramework = "net7.0";` and rebuild and reinstall tool)
 ```
-dotnet run --project FSharpPacker FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test-aot -- -r win-x64 /p:PublishAot=true
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test-aot -r win-x64 /p:PublishAot=true
+test-aot\LoadFile.exe
+```
+
+# Producing Nuget package
+
+```
+dotnet pack FSharpPacker -c Release
+dotnet tool install --global --add-source FSharpPacker\bin\Release\ FSharpPacker
+```
+
+```
+dotnet tool uninstall -g FSharpPacker
 ```
