@@ -21,9 +21,9 @@ fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test
 test\LoadFile.exe
 ```
 
-for AOT build (need to hack Program.cs and change to `var targetFramework = "net7.0";` and rebuild and reinstall tool)
+for AOT build
 ```shell
-fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test-aot -r win-x64 /p:PublishAot=true
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test-aot -r win-x64 --framework net7.0 /p:PublishAot=true
 test-aot\LoadFile.exe
 ```
 

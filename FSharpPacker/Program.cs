@@ -3,6 +3,25 @@ using FSharpPacker;
 
 var sourceFile = args[0];
 var targetFramework = "net6.0";
+for (var i = 0; i < args.Length; i++)
+{
+    if (args[i] == "-f" || args[i] == "--framework")
+    {
+        if (i == args.Length - 1)
+        {
+            throw new ArgumentException("Please specify target framework");
+        }
+
+        var nextArg = args[i + 1];
+        if (nextArg.StartsWith("-"))
+        {
+            throw new ArgumentException("Please specify target framework");
+        }
+
+        targetFramework = nextArg;
+        break;
+    }
+}
 var preprocessor = new FsxPreprocessor();
 preprocessor.AddSource(sourceFile);
 
