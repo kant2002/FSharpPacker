@@ -59,7 +59,7 @@ let main args =
                )
             |> fun x -> String.Join(Environment.NewLine, x)
     let defineInteractive = true;
-    let projectContent = $"""<Project Sdk=""Microsoft.NET.Sdk"">
+    let projectContent = $"""<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
     <OutputType>Exe</OutputType>
@@ -89,7 +89,7 @@ let main args =
     let additionalArguments = args[1..];
 
     Console.WriteLine($"Compiling generated file {tempProject}")
-    let commandLineArguments = [| "publish" ; tempProject |] |> Array.append additionalArguments
+    let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  additionalArguments
     Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
     let prc = Process.Start("dotnet", commandLineArguments)
     prc.WaitForExit()
