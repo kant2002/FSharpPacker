@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FSharpPacker\FSharpPacker.csproj" />
+      <ProjectReference Include="..\FSharpPacker\FSharpPacker.FSharp.fsproj" />
     </ItemGroup>
 
     <ItemGroup>

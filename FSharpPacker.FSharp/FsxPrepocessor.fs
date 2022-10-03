@@ -28,8 +28,11 @@ type FsxPreprocessor() =
             packageReferences <- ResizeArray(state.packageReferences)
         
     member _.GetSource(mainFsx: string) =
+        sourceFiles
+        |> Seq.tryFind (fun x -> x.FileName = mainFsx)
+        |> Option.map (fun x -> x.ReadProducedFile())
+        |> Option.defaultValue ""
         
-        ()
     
     member _.GetSources() =
         sourceFiles.ToArray()

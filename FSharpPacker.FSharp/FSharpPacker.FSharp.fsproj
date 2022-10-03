@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>FSharpPacker</RootNamespace>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>fspack</ToolCommandName>
+    <VersionPrefix>0.0.3</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+    <Compile Include="Packer.fs" />
     <Compile Include="FsxPrepocessor.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 
 </Project>

@@ -58,7 +58,7 @@ public class UnitTest1
         
         Assert.AreEqual("module RegularReference" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var assemblies = preprocessor.GetReferences();
-        Assert.AreEqual(1, assemblies.Count);
+        Assert.AreEqual(1, assemblies.Length);
         Assert.AreEqual(Path.GetFullPath("Samples/fake_dll.fsx"), assemblies[0]);
     }
     [TestMethod]
@@ -72,9 +72,9 @@ public class UnitTest1
         
         Assert.AreEqual("module NugetLastVersion" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var assemblies = preprocessor.GetReferences();
-        Assert.AreEqual(0, assemblies.Count);
+        Assert.AreEqual(0, assemblies.Length);
         var packages = preprocessor.GetPackageReferences();
-        Assert.AreEqual(1, packages.Count);
+        Assert.AreEqual(1, packages.Length);
         Assert.AreEqual("Newtonsoft.Json", packages[0].Name);
         Assert.AreEqual("*", packages[0].Version);
     }
@@ -89,9 +89,9 @@ public class UnitTest1
         
         Assert.AreEqual("module NugetExplicitVersion" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var assemblies = preprocessor.GetReferences();
-        Assert.AreEqual(0, assemblies.Count);
+        Assert.AreEqual(0, assemblies.Length);
         var packages = preprocessor.GetPackageReferences();
-        Assert.AreEqual(1, packages.Count);
+        Assert.AreEqual(1, packages.Length);
         Assert.AreEqual("DiffSharp-lite", packages[0].Name);
         Assert.AreEqual("1.0.0-preview-328097867", packages[0].Version);
     }
@@ -106,7 +106,7 @@ public class UnitTest1
         
         Assert.AreEqual("module LoadFile" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var sources = preprocessor.GetSources();
-        Assert.AreEqual(2, sources.Count);
+        Assert.AreEqual(2, sources.Length);
     }
 
     [TestMethod]
@@ -120,7 +120,7 @@ public class UnitTest1
 
         Assert.AreEqual("module MultipleLoadFile" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var sources = preprocessor.GetSources();
-        Assert.AreEqual(3, sources.Count);
+        Assert.AreEqual(3, sources.Length);
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ public class UnitTest1
         preprocessor.Process();
 
         var sources = preprocessor.GetSources();
-        Assert.AreEqual(2, sources.Count);
+        Assert.AreEqual(2, sources.Length);
         // we expect module name of test in lowercase should be in pascal case
         Assert.AreEqual("module Testscript" + Environment.NewLine + "open System" + Environment.NewLine + "let testScript() = Console.WriteLine 1" + Environment.NewLine, sources[0].ReadProducedFile());
         // we expect module name of test in kebabcase should be escaped correctly
@@ -150,6 +150,6 @@ public class UnitTest1
 
         Assert.AreEqual("module IncludePath" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
         var sources = preprocessor.GetSources();
-        Assert.AreEqual(2, sources.Count);
+        Assert.AreEqual(2, sources.Length);
     }
 }
