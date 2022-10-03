@@ -16,16 +16,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FSharpPacker\FSharpPacker.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="Samples\**\*.fsx" />
       <Content Include="Samples\**\*.fsx" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Samples\Level1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FSharpPacker.FSharp\FSharpPacker.FSharp.fsproj" />
     </ItemGroup>
 
 </Project>
