@@ -26,7 +26,7 @@
           default = fspack;
         };
         apps = rec {
-          fspack = flake-utils.lib.mkApp { drv = derivation.fspack; };
+          fspack = flake-utils.lib.mkApp { drv = derivation.fspack; exePath = "/bin/FSharpPacker.FSharp"; };
           default = fspack;
         };
         shell = pkgs.mkShell {
