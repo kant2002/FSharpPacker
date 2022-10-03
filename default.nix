@@ -14,6 +14,9 @@ pkgs.buildDotnetModule rec {
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
   dotnet-runtime = pkgs.dotnetCorePackages.aspnetcore_6_0;
 
+  runtimeDeps = [ 
+      pkgs.dotnetCorePackages.sdk_6_0
+  ];
 #  meta = with lib; {
 #    description = "Tool for packaging FSX files as self-contained executables";
 #    homepage = "https://github.com/kant2002/FSharpPacker";
