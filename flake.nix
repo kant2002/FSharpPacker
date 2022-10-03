@@ -7,7 +7,11 @@
   };
 
   outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+    flake-utils.lib.eachSystem ([
+      flake-utils.lib.system.x86_64-linux
+      flake-utils.lib.system.aarch64-darwin
+      flake-utils.lib.system.x86_64-darwin 
+    ]) (system:
       let
         pkgs = import nixpkgs { inherit system; };
         fspack = import ./default.nix {
@@ -22,7 +26,7 @@
           default = fspack;
         };
         apps = rec {
-          fspack = flake-utils.lib.mkApp { drv = derivation; };
+          fspack = flake-utils.lib.mkApp { drv = derivation.fspack; };
           default = fspack;
         };
         shell = pkgs.mkShell {
