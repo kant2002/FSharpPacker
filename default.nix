@@ -17,6 +17,14 @@ pkgs.buildDotnetModule rec {
   runtimeDeps = [ 
       pkgs.dotnetCorePackages.sdk_6_0
   ];
+  postPatch = ''
+      # this fixes "dotnet" path
+      substituteInPlace \
+        FSharpPacker.FSharp/Program.fs \
+        --replace \
+        'Process.Start("dotnet"' \
+        'Process.Start("${pkgs.dotnetCorePackages.sdk_6_0}/bin/dotnet"'
+    '';
 #  meta = with lib; {
 #    description = "Tool for packaging FSX files as self-contained executables";
 #    homepage = "https://github.com/kant2002/FSharpPacker";

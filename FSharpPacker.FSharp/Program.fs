@@ -91,9 +91,6 @@ let main args =
     Console.WriteLine($"Compiling generated file {tempProject}")
     let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  additionalArguments
     Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
-    let startInfo = ProcessStartInfo(FileName = "dotnet")
-    startInfo.UseShellExecute <- true
-    commandLineArguments |> Array.iter (startInfo.ArgumentList.Add)
-    let prc = Process.Start(startInfo)
+    let prc = Process.Start("dotnet", commandLineArguments)
     prc.WaitForExit()
     prc.ExitCode
