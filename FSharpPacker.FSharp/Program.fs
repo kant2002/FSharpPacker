@@ -4,33 +4,34 @@ open System
 open System.Diagnostics
 open System.IO
 open FSharpPacker
+open Argu
 
+type CliArguments =
+    | [<AltCommandLine("-f")>] Framework of framework:string
+    | [<AltCommandLine("-v")>] Verbose
+    | [<MainCommand; ExactlyOnce; Last>] File of file:string
+    | [<AltCommandLine("-a")>] Additional of string list
+
+    interface IArgParserTemplate with
+        member s.Usage =
+            match s with
+            | Framework _ -> "specify target framework (e.g. net6.0)"
+            | Verbose _ -> "verbose output"
+            | File _ -> ".fsx file to pack"
+            | Additional _ -> "additional arguments as trings"
 
 [<EntryPoint>]
-let main args =
-    let sourceFile = args[0]
-    let mutable targetFramework = "net6.0"
+let main argv =
+    let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
+    let parser = ArgumentParser.Create<CliArguments>(programName = "fspack", errorHandler = errorHandler)
 
-    let mutable _foundTarget = false
-
-    for i in 0 .. args.Length do
-        if _foundTarget then
-            ()
-        elif args[i] = "-f" || args[i] = "--framework" then
-            if i = args.Length - 1 then
-                invalidArg "-f" "Please specify target framework"
-
-            let nextArg = args[i + 1]
-
-            if nextArg.StartsWith("-") then
-                invalidArg nextArg "Please specify target framework"
-
-            targetFramework <- nextArg
-            _foundTarget <- true // 'break' substitute
+    let results = parser.ParseCommandLine argv
 
 
-
-    let preprocessor = FsxPreprocessor()
+    let sourceFile = results.GetResult(CliArguments.File)
+    let targetFramework = results.GetResult(CliArguments.Framework, defaultValue = "net6.0")
+    let verbose =  match results.TryGetResult(CliArguments.Verbose) with | Some _ -> true |None -> false
+    let preprocessor = FsxPreprocessor(verbose = verbose)
     preprocessor.AddSource(sourceFile)
     preprocessor.Process()
 
@@ -86,11 +87,11 @@ let main args =
     let tempProject = path + ".fsproj";
     File.WriteAllText(tempProject, projectContent);
 
-    let additionalArguments = args[1..];
+    let additionalArguments = results.GetResult(CliArguments.Additional, defaultValue = List.empty)
 
-    Console.WriteLine($"Compiling generated file {tempProject}")
-    let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  additionalArguments
-    Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
+    if verbose then Console.WriteLine($"Compiling generated file {tempProject}")
+    let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  (additionalArguments |> List.toArray)
+    if verbose then Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
     let prc = Process.Start("dotnet", commandLineArguments)
     prc.WaitForExit()
     prc.ExitCode

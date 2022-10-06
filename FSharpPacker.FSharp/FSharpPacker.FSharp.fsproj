@@ -16,4 +16,8 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
+  </ItemGroup>
+
 </Project>
