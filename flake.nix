@@ -29,7 +29,7 @@
           fspack = flake-utils.lib.mkApp { drv = derivation.fspack; exePath = "/bin/FSharpPacker.FSharp"; };
           default = fspack;
         };
-        shell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           name = "dotnet-env";
           packages = [
             pkgs.dotnet-sdk
