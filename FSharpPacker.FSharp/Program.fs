@@ -9,6 +9,8 @@ open Argu
 type CliArguments =
     | [<AltCommandLine("-f")>] Framework of framework:string
     | [<AltCommandLine("-v")>] Verbose
+    | [<AltCommandLine("-nsc")>] NoSelfContained
+    | [<AltCommandLine("-aot")>] AOT
     | [<MainCommand; ExactlyOnce; First>] File of file:string
 
     interface IArgParserTemplate with
@@ -17,6 +19,8 @@ type CliArguments =
             | Framework _ -> "Specify target framework (e.g. net6.0)"
             | Verbose _ -> "Verbose output"
             | File _ -> ".fsx file to convert to executable file"
+            | AOT _ -> "Enable AOT-compilation"
+            | NoSelfContained _ -> "Don't publish as self-contained (with dotnet runtime included)"
 
 [<EntryPoint>]
 let main argv =
@@ -85,10 +89,18 @@ let main argv =
     let tempProject = path + ".fsproj";
     File.WriteAllText(tempProject, projectContent);
 
+    let selfContained = match results.TryGetResult(CliArguments.NoSelfContained) with | Some _ -> false |None -> true
+    let doAot = match results.TryGetResult(CliArguments.AOT) with | Some _ -> true |None -> false
     let additionalArguments = results.UnrecognizedCliParams
 
     if verbose then Console.WriteLine($"Compiling generated file {tempProject}")
-    let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  (additionalArguments |> List.toArray)
+    let commandLineArguments =  Array.append  [| "publish"
+                                                 tempProject
+                                                 "-c"
+                                                 "Release"
+                                                 if doAot then "/p:PublishAot=true" else ""
+                                                 if selfContained then "--self-contained" else "--no-self-contained"|]
+                                               (additionalArguments |> List.toArray)
     if verbose then Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
     let prc = Process.Start("dotnet", commandLineArguments)
     prc.WaitForExit()
