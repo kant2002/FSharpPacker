@@ -9,7 +9,7 @@ open Argu
 type CliArguments =
     | [<AltCommandLine("-f")>] Framework of framework:string
     | [<AltCommandLine("-v")>] Verbose
-    | [<MainCommand; ExactlyOnce; Last>] File of file:string
+    | [<MainCommand; ExactlyOnce; First>] File of file:string
 
     interface IArgParserTemplate with
         member s.Usage =

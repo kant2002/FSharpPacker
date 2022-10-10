@@ -8,6 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fspack</ToolCommandName>
     <VersionPrefix>0.0.3</VersionPrefix>
+    <PackageId>FSharpPacker</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
