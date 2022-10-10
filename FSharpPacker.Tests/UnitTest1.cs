@@ -7,7 +7,7 @@ public class UnitTest1
     public void PassthroughFileContent()
     {
         var sourceFile = "Samples/PlainFsharp.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -18,7 +18,7 @@ public class UnitTest1
     public void HelpCommand()
     {
         var sourceFile = "Samples/HelpCommand.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -29,7 +29,7 @@ public class UnitTest1
     public void TimeCommands()
     {
         var sourceFile = "Samples/TimeCommands.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -40,7 +40,7 @@ public class UnitTest1
     public void QuitCommand()
     {
         var sourceFile = "Samples/QuitCommand.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -51,7 +51,7 @@ public class UnitTest1
     public void ResolveReferences()
     {
         var sourceFile = "Samples/RegularReference.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -65,7 +65,7 @@ public class UnitTest1
     public void NugetPackageWithoutVersion()
     {
         var sourceFile = "Samples/NugetLastVersion.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -82,7 +82,7 @@ public class UnitTest1
     public void NugetPackageWithExplicitVersion()
     {
         var sourceFile = "Samples/NugetExplicitVersion.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -99,7 +99,7 @@ public class UnitTest1
     public void LoadFile()
     {
         var sourceFile = "Samples/LoadFile.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -113,7 +113,7 @@ public class UnitTest1
     public void MultipleLoadFile()
     {
         var sourceFile = "Samples/MultipleLoadFile.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -127,7 +127,7 @@ public class UnitTest1
     public void LowercaseScriptWithDashesInName()
     {
         var sourceFile = "Samples/lowercase-script.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
@@ -143,7 +143,7 @@ public class UnitTest1
     public void IncludePath()
     {
         var sourceFile = "Samples/IncludePath.fsx";
-        var preprocessor = new FsxPreprocessor();
+        var preprocessor = new FsxPreprocessor(verbose:false);
         preprocessor.AddSource(sourceFile);
 
         preprocessor.Process();
