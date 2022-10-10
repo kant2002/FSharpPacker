@@ -51,7 +51,7 @@ test-aot\LoadFile.exe
 # Producing Nuget package
 
 ```shell
-dotnet pack FSharpPacker -c Release
+dotnet pack FSharpPacker.FSharp -c Release
 dotnet tool install --global --add-source FSharpPacker\bin\Release\ FSharpPacker
 ```
 
