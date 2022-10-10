@@ -10,7 +10,6 @@ type CliArguments =
     | [<AltCommandLine("-f")>] Framework of framework:string
     | [<AltCommandLine("-v")>] Verbose
     | [<MainCommand; ExactlyOnce; Last>] File of file:string
-    | [<AltCommandLine("-a")>] Additional of string list
 
     interface IArgParserTemplate with
         member s.Usage =
@@ -18,14 +17,13 @@ type CliArguments =
             | Framework _ -> "specify target framework (e.g. net6.0)"
             | Verbose _ -> "verbose output"
             | File _ -> ".fsx file to pack"
-            | Additional _ -> "additional arguments as trings"
 
 [<EntryPoint>]
 let main argv =
     let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)
     let parser = ArgumentParser.Create<CliArguments>(programName = "fspack", errorHandler = errorHandler)
 
-    let results = parser.ParseCommandLine argv
+    let results = parser.ParseCommandLine (inputs=argv, ignoreUnrecognized = true)
 
 
     let sourceFile = results.GetResult(CliArguments.File)
@@ -87,7 +85,7 @@ let main argv =
     let tempProject = path + ".fsproj";
     File.WriteAllText(tempProject, projectContent);
 
-    let additionalArguments = results.GetResult(CliArguments.Additional, defaultValue = List.empty)
+    let additionalArguments = results.UnrecognizedCliParams
 
     if verbose then Console.WriteLine($"Compiling generated file {tempProject}")
     let commandLineArguments =  Array.append  [| "publish" ; tempProject |]  (additionalArguments |> List.toArray)
