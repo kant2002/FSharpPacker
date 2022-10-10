@@ -14,9 +14,9 @@ type CliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Framework _ -> "specify target framework (e.g. net6.0)"
-            | Verbose _ -> "verbose output"
-            | File _ -> ".fsx file to pack"
+            | Framework _ -> "Specify target framework (e.g. net6.0)"
+            | Verbose _ -> "Verbose output"
+            | File _ -> ".fsx file to convert to executable file"
 
 [<EntryPoint>]
 let main argv =
