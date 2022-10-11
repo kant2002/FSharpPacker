@@ -3,13 +3,36 @@
 
 This tool allows package FSX files as self-contained executables.
 
-Install it.
+Installation:
 
 ```shell
 dotnet tool install --global FSharpPacker
 ```
 
-Usage is following
+# Usage
+
+USAGE: `fspack <file> [--help] [--framework <framework>] [--verbose] [--noselfcontained] [--aot] `
+
+FILE:
+
+    <file>                .fsx file to convert to executable file
+
+OPTIONS:
+
+    --framework, -f <framework>
+                          Specify target framework (e.g. net6.0)
+    --verbose, -v         Verbose output
+    --noselfcontained, -nsc
+                          Don't publish as self-contained (with dotnet runtime included)
+    --aot, -aot           Enable AOT-compilation
+    --help                display this list of options.
+
+
+**Please note that the app is produced as self-contained by default.**
+
+
+
+Simple usage:
 
 ```shell
 fspack fsx-file.fsx [<additional arguments to dotnet publish>]
@@ -17,15 +40,22 @@ fspack fsx-file.fsx [<additional arguments to dotnet publish>]
 
 For example:
 ```shell
-fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx -o test
 test\LoadFile.exe
 ```
 
 for AOT build
 ```shell
-fspack FSharpPacker.Tests\Samples\LoadFile.fsx --self-contained -o test-aot -r win-x64 --framework net7.0 /p:PublishAot=true
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx -aot -o test-aot -r win-x64 -f net7.0
 test-aot\LoadFile.exe
 ```
+
+Self-contained with dotnet 7 and a single-file executable:
+```shell
+fspack FSharpPacker.Tests/Samples/LoadFile.fsx  -o test-single-file -r win-x64 -f net7.0 -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+test-single-file\LoadFile.exe
+```
+
 
 # Supported FSX directives
 
@@ -52,7 +82,7 @@ test-aot\LoadFile.exe
 
 ```shell
 dotnet pack FSharpPacker.FSharp -c Release
-dotnet tool install --global --add-source FSharpPacker\bin\Release\ FSharpPacker
+dotnet tool install FSharpPacker --global --add-source FSharpPacker.FSharp\bin\Release\ 
 ```
 
 ```shell
