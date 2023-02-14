@@ -9,6 +9,18 @@ Installation:
 dotnet tool install --global FSharpPacker
 ```
 
+### [Nix](https://nixos.org/manual/nix/stable/) (Nix/NixOS)
+
+Nix w/ [Flakes](https://nixos.wiki/wiki/Flakes)
+```
+nix profile install github:kant2002/FSharpPacker
+```
+
+Run without installing
+```
+nix run github:kant2002/FSharpPacker -- --help
+```
+
 # Usage
 
 USAGE: `fspack <file> [--help] [--framework <framework>] [--verbose] [--noselfcontained] [--aot] `
@@ -40,7 +52,7 @@ fspack fsx-file.fsx [<additional arguments to dotnet publish>]
 
 For example:
 ```shell
-fspack FSharpPacker.Tests\Samples\LoadFile.fsx -o test
+fspack FSharpPacker.Tests\Samples\LoadFile.fsx -o test -r win-x64
 test\LoadFile.exe
 ```
 

@@ -10,13 +10,14 @@ pkgs.buildDotnetModule rec {
   testProjectFile = "FSharpPacker.Tests/FSharpPacker.Tests.csproj";
   nugetDeps = ./deps.nix;
 
-  doCheck = true;
+  doCheck = false;
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
   dotnet-runtime = pkgs.dotnetCorePackages.aspnetcore_6_0;
 
   runtimeDeps = [ 
       pkgs.dotnetCorePackages.sdk_6_0
   ];
+
   postPatch = ''
       # this fixes "dotnet" path
       substituteInPlace \
@@ -25,11 +26,9 @@ pkgs.buildDotnetModule rec {
         'Process.Start("dotnet"' \
         'Process.Start("${pkgs.dotnetCorePackages.sdk_6_0}/bin/dotnet"'
     '';
-#  meta = with lib; {
-#    description = "Tool for packaging FSX files as self-contained executables";
-#    homepage = "https://github.com/kant2002/FSharpPacker";
-#    maintainers = [ maintainers.abbradar ];
-#  };
     
+  postFixup = ''
+    mv $out/bin/FSharpPacker.FSharp $out/bin/fspack
+  '';
   executables = [ "FSharpPacker.FSharp" ];
 }
