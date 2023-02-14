@@ -4,7 +4,7 @@ open System
 open System.IO
 open Packer
 
-type FsxPreprocessor() =
+type FsxPreprocessor(verbose: bool) =
     
     let mutable sourceFiles = ResizeArray<SourceFile>()
     
@@ -20,9 +20,9 @@ type FsxPreprocessor() =
     member _.Process () =
         
         for sourceFile in sourceFiles do
-            Console.WriteLine($"Processing {sourceFile.FileName}")
+            if verbose then Console.WriteLine($"Processing {sourceFile.FileName}")
             let state: FsxProgramState = { sourceFiles = sourceFiles; references = references; packageReferences = packageReferences }
-            Packer.ProcessFile state sourceFile
+            Packer.ProcessFile state sourceFile verbose
             sourceFiles <- ResizeArray(state.sourceFiles)
             references <- ResizeArray(state.references)
             packageReferences <- ResizeArray(state.packageReferences)

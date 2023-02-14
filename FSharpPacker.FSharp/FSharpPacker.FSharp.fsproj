@@ -8,12 +8,17 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fspack</ToolCommandName>
     <VersionPrefix>0.0.3</VersionPrefix>
+    <PackageId>FSharpPacker</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="Packer.fs" />
     <Compile Include="FsxPrepocessor.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
   </ItemGroup>
 
 </Project>

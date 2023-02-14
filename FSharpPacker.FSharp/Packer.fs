@@ -120,7 +120,7 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
             SourceCode(normalizedLine)
     else SourceCode(normalizedLine)
 
-let rec public ProcessLine state sourceFile line =
+let rec public ProcessLine verbose  state sourceFile line =
     let normalizedLine = Regex.Replace(line, "\\s+\\#\\s+", "#")
     let lineResult = classifyLine sourceFile normalizedLine
     match lineResult with
@@ -128,17 +128,17 @@ let rec public ProcessLine state sourceFile line =
         | Unsupported -> ()
         | IncludePath(files) -> sourceFile.AddIncludePaths(files)
         | IncludeFiles(files) -> for file in files do
-                                    Console.WriteLine($"Including {file}")
+                                    if verbose then Console.WriteLine($"Including {file}")
                                     let innerFile = new SourceFile(file)
                                     state.sourceFiles <- Seq.append [innerFile] state.sourceFiles
-                                    ProcessFile state innerFile
+                                    ProcessFile state innerFile verbose
         | IncludeReference(references, packages) -> state.references <- Seq.append state.references references
                                                     state.packageReferences <- Seq.append state.packageReferences packages
     ()
 
-and public ProcessFile state sourceFile =
+and public ProcessFile state sourceFile verbose =
     sourceFile.WriteLine($"module {GetModuleName(sourceFile)}")
-    sourceFile.ReadContent() |> Seq.iter (ProcessLine state sourceFile)
+    sourceFile.ReadContent() |> Seq.iter (ProcessLine verbose state sourceFile )
     ()
     
     
