@@ -96,6 +96,22 @@ public class UnitTest1
         Assert.AreEqual("1.0.0-preview-328097867", packages[0].Version);
     }
     [TestMethod]
+    public void NugetCustomFeed()
+    {
+        var sourceFile = "Samples/NugetCustomFeed.fsx";
+        var preprocessor = new FsxPreprocessor(verbose:false);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+        
+        Assert.AreEqual("module NugetCustomFeed" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+        var assemblies = preprocessor.GetReferences();
+        Assert.AreEqual(0, assemblies.Length);
+        var packageSources = preprocessor.GetPackageSources();
+        Assert.AreEqual(1, packageSources.Length);
+        Assert.AreEqual("https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet8/nuget/v3/index.json", packageSources[0]);
+    }
+    [TestMethod]
     public void LoadFile()
     {
         var sourceFile = "Samples/LoadFile.fsx";

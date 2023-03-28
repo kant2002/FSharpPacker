@@ -14,6 +14,7 @@ type public SourceFile(fileName: string, reader: TextReader) = class
     let stream = new FileStream(tempFile, FileMode.Open, FileAccess.Write, FileShare.Read)
     let writer = new StreamWriter( stream )
     let mutable additionalSearchPaths = [ Path.GetDirectoryName(Path.GetFullPath(fileName)) ]
+    let mutable additionalNugetSources = [ ]
 
     new (fileName, content) = SourceFile(fileName, new StringReader(content))
     new (fileName: string) = SourceFile(fileName, new StreamReader(fileName))
@@ -31,6 +32,10 @@ type public SourceFile(fileName: string, reader: TextReader) = class
     member this.AddIncludePaths (enumerable: seq<string>) =
         let x = Seq.map (fun (p: string) -> if Path.IsPathRooted(p) then p else Path.Combine(additionalSearchPaths[0], p)) enumerable 
         additionalSearchPaths <- additionalSearchPaths @ (x |> List.ofSeq);
+
+    member this.AddNugetSource (enumerable: seq<string>) =
+        let x = Seq.map (fun (p: string) -> if Path.IsPathRooted(p) then p else Path.Combine(additionalSearchPaths[0], p)) enumerable 
+        additionalNugetSources <- additionalNugetSources @ (x |> List.ofSeq);
 
     member this.ResolveRelativePath(path: string) =
         let resolve basePath =
@@ -62,6 +67,7 @@ type public FsxProgramState = {
     mutable sourceFiles: seq<SourceFile>;
     mutable references: seq<string>;
     mutable packageReferences: seq<NugetReference>;
+    mutable nugetSources: seq<string>;
 }
 
 let public AddSource state sourceFile (content: string) =
@@ -82,6 +88,7 @@ type FsxLine =
     | IncludePath of seq<string>
     | IncludeFiles of seq<string>
     | IncludeReference of references: seq<string> * packages: seq<NugetReference>
+    | AddNugetFeed of string
 
 let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
     if normalizedLine.StartsWith("#") then 
@@ -103,6 +110,14 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
                     references <- Seq.append references [Path.GetFullPath(relativeReferencePath)]
                 ()
             IncludeReference(references, packages)
+        elif normalizedLine.StartsWith("#i") then
+            let pathStrings = normalizedLine.Replace("#i ", "")
+            let normalizedReference = Regex.Replace(pathStrings, "\\s+nuget\\s+:\\s+", "nuget:") |> Unquote
+            if normalizedReference.StartsWith("nuget:") then
+                let packageParts = normalizedReference.Substring("nuget:".Length).Trim()
+                AddNugetFeed(packageParts)
+            else
+                Unsupported
         elif normalizedLine.StartsWith("#help") then
             Unsupported
         elif normalizedLine.StartsWith("#time") then
@@ -126,14 +141,17 @@ let rec public ProcessLine verbose  state sourceFile line =
     match lineResult with
         | SourceCode(code) -> sourceFile.WriteLine(code)
         | Unsupported -> ()
+        | AddNugetFeed(code) -> state.nugetSources <- Seq.append state.nugetSources [code]
         | IncludePath(files) -> sourceFile.AddIncludePaths(files)
         | IncludeFiles(files) -> for file in files do
                                     if verbose then Console.WriteLine($"Including {file}")
                                     let innerFile = new SourceFile(file)
                                     state.sourceFiles <- Seq.append [innerFile] state.sourceFiles
                                     ProcessFile state innerFile verbose
-        | IncludeReference(references, packages) -> state.references <- Seq.append state.references references
-                                                    state.packageReferences <- Seq.append state.packageReferences packages
+        | IncludeReference(references, packages: seq<NugetReference>) ->
+            state.references <- Seq.append state.references references
+            state.packageReferences <- Seq.append state.packageReferences packages
+                                                    
     ()
 
 and public ProcessFile state sourceFile verbose =

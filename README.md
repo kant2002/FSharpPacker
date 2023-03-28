@@ -78,7 +78,7 @@ test-single-file\LoadFile.exe
 | #r "nuget: package"     | :white_check_mark: | |
 | #r "nuget: package, version"     | :white_check_mark: | |
 | #load     | :white_check_mark: | |
-| #I "nuget: source-feed"     | :white_large_square: | Only because I'm lazy. File an issue if needed. |
+| #i "nuget: source-feed"     | :white_check_mark: | |
 | #quit     | :white_check_mark: | |
 | #r "custom: custom-path"     | :white_large_square: | This is tricky and require deep involvement with FSharp.Compiler.Services |
 | #I "custom: custom-path-search-hint"     | :white_large_square: | |
