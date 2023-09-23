@@ -36,6 +36,7 @@ OPTIONS:
     --verbose, -v         Verbose output
     --noselfcontained, -nsc
                           Don't publish as self-contained (with dotnet runtime included)
+    --singefile, -sf      Produce single file
     --aot, -aot           Enable AOT-compilation
     --help                display this list of options.
 
@@ -64,7 +65,7 @@ test-aot\LoadFile.exe
 
 Self-contained with dotnet 7 and a single-file executable:
 ```shell
-fspack FSharpPacker.Tests/Samples/LoadFile.fsx  -o test-single-file -r win-x64 -f net7.0 -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+fspack FSharpPacker.Tests/Samples/LoadFile.fsx  -o test-single-file -r win-x64 -f net7.0 -sf -p:EnableCompressionInSingleFile=true
 test-single-file\LoadFile.exe
 ```
 
