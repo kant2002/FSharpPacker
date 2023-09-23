@@ -7,7 +7,7 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fspack</ToolCommandName>
-    <VersionPrefix>0.0.3</VersionPrefix>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <PackageId>FSharpPacker</PackageId>
   </PropertyGroup>
 
