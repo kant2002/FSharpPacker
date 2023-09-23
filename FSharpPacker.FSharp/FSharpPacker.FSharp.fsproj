@@ -9,6 +9,8 @@
     <ToolCommandName>fspack</ToolCommandName>
     <VersionPrefix>1.0.0</VersionPrefix>
     <PackageId>FSharpPacker</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,5 +22,10 @@
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
 
 </Project>
