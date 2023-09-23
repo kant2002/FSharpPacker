@@ -10,17 +10,19 @@ type CliArguments =
     | [<AltCommandLine("-f")>] Framework of framework:string
     | [<AltCommandLine("-v")>] Verbose
     | [<AltCommandLine("-nsc")>] NoSelfContained
-    | [<AltCommandLine("-aot")>] AOT
+    | [<AltCommandLine("-sf")>] SingeFile
+    | AOT
     | [<MainCommand; ExactlyOnce; First>] File of file:string
 
     interface IArgParserTemplate with
         member s.Usage =
             match s with
             | Framework _ -> "Specify target framework (e.g. net6.0)"
-            | Verbose _ -> "Verbose output"
+            | Verbose -> "Verbose output"
             | File _ -> ".fsx file to convert to executable file"
-            | AOT _ -> "Enable AOT-compilation"
-            | NoSelfContained _ -> "Don't publish as self-contained (with dotnet runtime included)"
+            | AOT -> "Enable AOT-compilation"
+            | SingeFile -> "Produce single file"
+            | NoSelfContained -> "Don't publish as self-contained (with dotnet runtime included)"
 
 [<EntryPoint>]
 let main argv =
@@ -91,6 +93,7 @@ let main argv =
 
     let selfContained = match results.TryGetResult(CliArguments.NoSelfContained) with | Some _ -> false |None -> true
     let doAot = match results.TryGetResult(CliArguments.AOT) with | Some _ -> true |None -> false
+    let doSingleFile = match results.TryGetResult(CliArguments.SingeFile) with | Some _ -> true |None -> false
     let additionalArguments = results.UnrecognizedCliParams
 
     if verbose then Console.WriteLine($"Compiling generated file {tempProject}")
@@ -99,6 +102,8 @@ let main argv =
                                                  "-c"
                                                  "Release"
                                                  if doAot then "/p:PublishAot=true" else ""
+                                                 if doSingleFile then "/p:PublishSingleFile=true" else ""
+                                                 if doSingleFile then "/p:IncludeNativeLibrariesForSelfExtract=true" else ""
                                                  if selfContained then "--self-contained" else "--no-self-contained"|]
                                                (additionalArguments |> List.toArray)
     if verbose then Console.WriteLine($"""Running dotnet {String.Join(" ", commandLineArguments)}""")
