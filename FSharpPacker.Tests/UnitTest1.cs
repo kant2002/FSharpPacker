@@ -168,4 +168,17 @@ public class UnitTest1
         var sources = preprocessor.GetSources();
         Assert.AreEqual(2, sources.Length);
     }
+    [TestMethod]
+    public void ConditionalCompilation()
+    {
+        var sourceFile = "Samples/ConditionalCompilation.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: false);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual("module ConditionalCompilation" + Environment.NewLine + "#if INTERACTIVE" + Environment.NewLine + "printfn \"INTERACTIVE\"" + Environment.NewLine + "#else" + Environment.NewLine + "printfn \"NOT INTERACTIVE\"" + Environment.NewLine + "#endif" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+        var sources = preprocessor.GetSources();
+        Assert.AreEqual(1, sources.Length);
+    }
 }

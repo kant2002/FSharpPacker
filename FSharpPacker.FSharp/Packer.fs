@@ -110,7 +110,7 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
                     references <- Seq.append references [Path.GetFullPath(relativeReferencePath)]
                 ()
             IncludeReference(references, packages)
-        elif normalizedLine.StartsWith("#i") then
+        elif normalizedLine.StartsWith("#i") && not (normalizedLine.StartsWith("#if")) then
             let pathStrings = normalizedLine.Replace("#i ", "")
             let normalizedReference = Regex.Replace(pathStrings, "\\s+nuget\\s+:\\s+", "nuget:") |> Unquote
             if normalizedReference.StartsWith("nuget:") then
