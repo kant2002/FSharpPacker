@@ -69,7 +69,7 @@ let main argv =
     <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
     <OutputType>Exe</OutputType>
     <TargetFramework>{targetFramework}</TargetFramework>
-    {(if defineInteractive then  "<DefineConstants>$(DefineConstants);INTERACTIVE</DefineConstants>" else String.Empty)}
+    {(if defineInteractive then  "<DefineConstants>$(DefineConstants);INTERACTIVE;COMPILED_INTERACTIVE</DefineConstants>" else String.Empty)}
   </PropertyGroup>
 
   <ItemGroup>
