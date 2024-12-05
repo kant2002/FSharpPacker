@@ -38,6 +38,12 @@ type FsxPreprocessor(verbose: bool) =
         |> Option.map (fun x -> x.ReadProducedFile())
         |> Option.defaultValue ""
         
+    member _.FindSource(matcher: Func<string, bool>) =
+        sourceFiles
+        |> Seq.tryFind (fun x -> matcher.Invoke(x.FileName))
+        |> Option.map (fun x -> x.ReadProducedFile())
+        |> Option.defaultValue ""
+        
     
     member _.GetSources() =
         sourceFiles.ToArray()

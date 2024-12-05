@@ -155,8 +155,18 @@ let rec public ProcessLine verbose  state sourceFile line =
     ()
 
 and public ProcessFile state sourceFile verbose =
-    sourceFile.WriteLine($"module {GetModuleName(sourceFile)}")
-    sourceFile.ReadContent() |> Seq.iter (ProcessLine verbose state sourceFile )
+    let worker = ProcessLine verbose state sourceFile
+    let mutable insertedModule = false
+    sourceFile.ReadContent() 
+        |> Seq.iteri (fun i line -> 
+                                    if insertedModule || (String.IsNullOrWhiteSpace(line.Trim())) 
+                                    then worker line
+                                    else 
+                                        let trimmed = line.TrimStart()
+                                        insertedModule <- true
+                                        if not (trimmed.StartsWith("namespace ") || trimmed.StartsWith("namespace\t")) then
+                                            sourceFile.WriteLine($"module {GetModuleName(sourceFile)}")
+                                        worker line)
     ()
     
     

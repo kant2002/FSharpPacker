@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FSharpPacker.FSharp": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\d\\my\\lesson1\\lesson15.fsx -sf -r win-x86 --framework net7.0 -o x86 -p:EnableCompressionInSingleFile=true"
+    }
+  }
+}

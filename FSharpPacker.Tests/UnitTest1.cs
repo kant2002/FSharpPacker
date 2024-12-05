@@ -181,4 +181,22 @@ public class UnitTest1
         var sources = preprocessor.GetSources();
         Assert.AreEqual(1, sources.Length);
     }
+    [TestMethod]
+    public void NamespacesInLoadFiles()
+    {
+        var sourceFile = "Samples/Namespaces.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: true);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual(@"module Namespaces
+printfn ""Hello, world""
+".ReplaceLineEndings(), preprocessor.GetSource(sourceFile));
+
+        Assert.AreEqual(@"namespace Asfaload.Collector
+module Queue=
+    let f (s:string) = s
+".ReplaceLineEndings(), preprocessor.FindSource(_ => _.EndsWith("Level1/WithNamespace.fsx")));
+    }
 }
