@@ -13,10 +13,12 @@ type FsxPreprocessor(verbose: bool) =
     let mutable packageReferences = ResizeArray<NugetReference>()
     
     member _.AddSource (sourceFile:string, content:string) =
-        sourceFiles.Add(SourceFile(sourceFile, content))
+        let newSourceFile = SourceFile(sourceFile, content)
+        sourceFiles.Add(newSourceFile)
+        newSourceFile
         
-    member _.AddSource (sourceFile:string) =
-        sourceFiles.Add(SourceFile(sourceFile, File.ReadAllText(sourceFile)));
+    member this.AddSource (sourceFile:string) =
+        this.AddSource(sourceFile, File.ReadAllText(sourceFile))
         
     member _.AddPackageSource (packageSource:string) =
         packageSources.Add packageSource;
@@ -25,7 +27,7 @@ type FsxPreprocessor(verbose: bool) =
         packageSources <- ResizeArray<string>()
         for sourceFile in sourceFiles do
             if verbose then Console.WriteLine($"Processing {sourceFile.FileName}")
-            let state: FsxProgramState = { sourceFiles = sourceFiles; references = references; packageReferences = packageReferences; nugetSources = packageSources }
+            let state: FsxProgramState = { sourceFiles = sourceFiles.ToArray(); references = references; packageReferences = packageReferences; nugetSources = packageSources }
             Packer.ProcessFile state sourceFile verbose
             sourceFiles <- ResizeArray(state.sourceFiles)
             references <- ResizeArray(state.references)

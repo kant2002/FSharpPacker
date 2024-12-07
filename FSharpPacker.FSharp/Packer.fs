@@ -15,6 +15,7 @@ type public SourceFile(fileName: string, reader: TextReader) = class
     let writer = new StreamWriter( stream )
     let mutable additionalSearchPaths = [ Path.GetDirectoryName(Path.GetFullPath(fileName)) ]
     let mutable additionalNugetSources = [ ]
+    let mutable sourceDependencies = [ ]
 
     new (fileName, content) = SourceFile(fileName, new StringReader(content))
     new (fileName: string) = SourceFile(fileName, new StreamReader(fileName))
@@ -36,6 +37,12 @@ type public SourceFile(fileName: string, reader: TextReader) = class
     member this.AddNugetSource (enumerable: seq<string>) =
         let x = Seq.map (fun (p: string) -> if Path.IsPathRooted(p) then p else Path.Combine(additionalSearchPaths[0], p)) enumerable 
         additionalNugetSources <- additionalNugetSources @ (x |> List.ofSeq);
+
+    member this.AddSourceDependency (dependency: SourceFile) =
+        sourceDependencies <- sourceDependencies @ [dependency]
+
+    member this.GetDependencies() =
+        sourceDependencies
 
     member this.ResolveRelativePath(path: string) =
         let resolve basePath =
@@ -64,14 +71,14 @@ let GetModuleName (sourceFile: SourceFile) =
         else fileName
 
 type public FsxProgramState = {
-    mutable sourceFiles: seq<SourceFile>;
+    mutable sourceFiles: array<SourceFile>;
     mutable references: seq<string>;
     mutable packageReferences: seq<NugetReference>;
     mutable nugetSources: seq<string>;
 }
 
 let public AddSource state sourceFile (content: string) =
-    let m = Seq.append state.sourceFiles [new SourceFile(sourceFile, content)]
+    let m = Array.append state.sourceFiles [| new SourceFile(sourceFile, content) |]
     { state with sourceFiles = m }
 
 let public AddSourceFromFile state sourceFile =
@@ -89,6 +96,14 @@ type FsxLine =
     | IncludeFiles of seq<string>
     | IncludeReference of references: seq<string> * packages: seq<NugetReference>
     | AddNugetFeed of string
+
+let rec findTree (file : SourceFile) = 
+    seq {
+        for sf in file.GetDependencies() do
+            for nsf in findTree sf do
+                yield nsf
+        yield file
+    }
 
 let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
     if normalizedLine.StartsWith("#") then 
@@ -146,7 +161,9 @@ let rec public ProcessLine verbose  state sourceFile line =
         | IncludeFiles(files) -> for file in files do
                                     if verbose then Console.WriteLine($"Including {file}")
                                     let innerFile = new SourceFile(file)
-                                    state.sourceFiles <- Seq.append [innerFile] state.sourceFiles
+                                    sourceFile.AddSourceDependency(innerFile)
+                                    let entryPoint = state.sourceFiles |> Array.last
+                                    state.sourceFiles <- findTree entryPoint |> Seq.toArray
                                     ProcessFile state innerFile verbose
         | IncludeReference(references, packages: seq<NugetReference>) ->
             state.references <- Seq.append state.references references

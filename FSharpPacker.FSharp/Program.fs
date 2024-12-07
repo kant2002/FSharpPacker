@@ -32,11 +32,11 @@ let main argv =
     let results = parser.ParseCommandLine (inputs=argv, ignoreUnrecognized = true)
 
 
-    let sourceFile = results.GetResult(CliArguments.File)
+    let sourceFileName = results.GetResult(CliArguments.File)
     let targetFramework = results.GetResult(CliArguments.Framework, defaultValue = "net6.0")
     let verbose =  match results.TryGetResult(CliArguments.Verbose) with | Some _ -> true |None -> false
     let preprocessor = FsxPreprocessor(verbose = verbose)
-    preprocessor.AddSource(sourceFile)
+    let sourceFile = preprocessor.AddSource(sourceFileName)
     preprocessor.Process()
 
     let sourceFiles = preprocessor.GetSources()
@@ -66,7 +66,7 @@ let main argv =
     let defineInteractive = true;
     let projectContent = $"""<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFile)}</AssemblyName>
+    <AssemblyName>{Path.GetFileNameWithoutExtension(sourceFileName)}</AssemblyName>
     <OutputType>Exe</OutputType>
     <TargetFramework>{targetFramework}</TargetFramework>
     {(if defineInteractive then  "<DefineConstants>$(DefineConstants);INTERACTIVE;COMPILED_INTERACTIVE</DefineConstants>" else String.Empty)}

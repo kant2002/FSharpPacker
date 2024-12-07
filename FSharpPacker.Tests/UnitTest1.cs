@@ -218,4 +218,15 @@ module Queue=
     let f (s:string) = s
 ".ReplaceLineEndings(), preprocessor.FindSource(_ => _.EndsWith("Level1/WithNamespaceAndComments.fsx")));
     }
+    [TestMethod]
+    public void MultipleLoadDirectivesFile()
+    {
+        var sourceFile = "Samples/MultipleLoadDirectivesFile.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: true);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        CollectionAssert.AreEqual(new string[] { "WithNamespace.fsx", "WithNamespaceAndComments.fsx", "Loader.fsx", "MultipleLoadDirectivesFile.fsx" }, preprocessor.GetSources().Select(_ => Path.GetFileName(_.FileName)).ToArray());
+    }
 }
