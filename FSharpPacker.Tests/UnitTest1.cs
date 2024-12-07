@@ -199,4 +199,23 @@ module Queue=
     let f (s:string) = s
 ".ReplaceLineEndings(), preprocessor.FindSource(_ => _.EndsWith("Level1/WithNamespace.fsx")));
     }
+    [TestMethod]
+    public void NamespacesWithCommentsInLoadFiles()
+    {
+        var sourceFile = "Samples/NamespacesWithComments.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: true);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual(@"module NamespacesWithComments
+printfn ""Hello, world""
+".ReplaceLineEndings(), preprocessor.GetSource(sourceFile));
+
+        Assert.AreEqual(@"// Use this
+namespace Asfaload.Collector
+module Queue=
+    let f (s:string) = s
+".ReplaceLineEndings(), preprocessor.FindSource(_ => _.EndsWith("Level1/WithNamespaceAndComments.fsx")));
+    }
 }

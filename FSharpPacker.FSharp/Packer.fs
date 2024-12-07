@@ -159,7 +159,7 @@ and public ProcessFile state sourceFile verbose =
     let mutable insertedModule = false
     sourceFile.ReadContent() 
         |> Seq.iteri (fun i line -> 
-                                    if insertedModule || (String.IsNullOrWhiteSpace(line.Trim())) 
+                                    if insertedModule || (String.IsNullOrWhiteSpace(line.Trim()) || line.TrimStart().StartsWith("//")) 
                                     then worker line
                                     else 
                                         let trimmed = line.TrimStart()
