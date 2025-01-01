@@ -75,6 +75,7 @@ type public FsxProgramState = {
     mutable references: seq<string>;
     mutable packageReferences: seq<NugetReference>;
     mutable nugetSources: seq<string>;
+    mutable projectReferences: seq<string>;
 }
 
 let public AddSource state sourceFile (content: string) =
@@ -94,7 +95,7 @@ type FsxLine =
     | Unsupported
     | IncludePath of seq<string>
     | IncludeFiles of seq<string>
-    | IncludeReference of references: seq<string> * packages: seq<NugetReference>
+    | IncludeReference of references: seq<string> * packages: seq<NugetReference> * projectReferences: seq<string>
     | AddNugetFeed of string
 
 let rec findTree (file : SourceFile) = 
@@ -110,9 +111,10 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
         if normalizedLine.StartsWith("#r") then
             let pathStrings = normalizedLine.Replace("#r ", "")
             let mutable references: seq<string> = []
+            let mutable projectReferences: seq<string> = []
             let mutable packages: seq<NugetReference> = []
             for path in ParsePaths(pathStrings) do
-                let normalizedReference = Regex.Replace(path, "\\s+nuget\\s+:\\s+", "nuget:")
+                let normalizedReference = Regex.Replace(path, "\\s+(nuget|fsproj)\\s+:\\s+", "$1:")
                 if normalizedReference.StartsWith("nuget:") then
                     let packageParts = normalizedReference.Substring("nuget:".Length).Split(',')
                     let package = match packageParts with
@@ -120,11 +122,14 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
                                     | [| name |] -> { Name = name.Trim(); Version = "*" }
                                     | _ -> raise (new InvalidOperationException("Incorrect format of nuget package"))
                     packages <- Seq.append packages [package]
+                elif normalizedReference.StartsWith("fsproj:") then
+                    let projectPath = normalizedReference.Substring("fsproj:".Length)
+                    projectReferences <- Seq.append projectReferences [projectPath.Trim()]
                 else
                     let relativeReferencePath = sourceFile.ResolveRelativePath(path)
                     references <- Seq.append references [Path.GetFullPath(relativeReferencePath)]
                 ()
-            IncludeReference(references, packages)
+            IncludeReference(references, packages, projectReferences)
         elif normalizedLine.StartsWith("#i") && not (normalizedLine.StartsWith("#if")) then
             let pathStrings = normalizedLine.Replace("#i ", "")
             let normalizedReference = Regex.Replace(pathStrings, "\\s+nuget\\s+:\\s+", "nuget:") |> Unquote
@@ -165,8 +170,9 @@ let rec public ProcessLine verbose  state sourceFile line =
                                     let entryPoint = state.sourceFiles |> Array.last
                                     state.sourceFiles <- findTree entryPoint |> Seq.toArray
                                     ProcessFile state innerFile verbose
-        | IncludeReference(references, packages: seq<NugetReference>) ->
+        | IncludeReference(references, packages: seq<NugetReference>, projectReferences) ->
             state.references <- Seq.append state.references references
+            state.projectReferences <- Seq.append state.projectReferences projectReferences
             state.packageReferences <- Seq.append state.packageReferences packages
                                                     
     ()

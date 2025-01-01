@@ -11,6 +11,7 @@ type FsxPreprocessor(verbose: bool) =
     let mutable references = ResizeArray<string>()
     let mutable packageSources = ResizeArray<string>()
     let mutable packageReferences = ResizeArray<NugetReference>()
+    let mutable projectReferences = ResizeArray<string>()
     
     member _.AddSource (sourceFile:string, content:string) =
         let newSourceFile = SourceFile(sourceFile, content)
@@ -21,18 +22,28 @@ type FsxPreprocessor(verbose: bool) =
         this.AddSource(sourceFile, File.ReadAllText(sourceFile))
         
     member _.AddPackageSource (packageSource:string) =
-        packageSources.Add packageSource;
+        packageSources.Add packageSource
+        
+    member _.AddProjectReference (projectReference:string) =
+        projectReferences.Add projectReference
 
     member _.Process () =
         packageSources <- ResizeArray<string>()
         for sourceFile in sourceFiles do
             if verbose then Console.WriteLine($"Processing {sourceFile.FileName}")
-            let state: FsxProgramState = { sourceFiles = sourceFiles.ToArray(); references = references; packageReferences = packageReferences; nugetSources = packageSources }
+            let state: FsxProgramState = { 
+                sourceFiles = sourceFiles.ToArray()
+                references = references
+                packageReferences = packageReferences
+                nugetSources = packageSources
+                projectReferences = projectReferences
+            }
             Packer.ProcessFile state sourceFile verbose
             sourceFiles <- ResizeArray(state.sourceFiles)
             references <- ResizeArray(state.references)
             packageReferences <- ResizeArray(state.packageReferences)
             packageSources.AddRange(state.nugetSources)
+            projectReferences.AddRange(state.projectReferences)
         
     member _.GetSource(mainFsx: string) =
         sourceFiles
@@ -45,8 +56,7 @@ type FsxPreprocessor(verbose: bool) =
         |> Seq.tryFind (fun x -> matcher.Invoke(x.FileName))
         |> Option.map (fun x -> x.ReadProducedFile())
         |> Option.defaultValue ""
-        
-    
+
     member _.GetSources() =
         sourceFiles.ToArray()
     
@@ -58,4 +68,7 @@ type FsxPreprocessor(verbose: bool) =
     
     member _.GetPackageSources() =
         packageSources.ToArray()
+    
+    member _.GetProjectReferences() =
+        projectReferences.ToArray()
     

@@ -13,6 +13,7 @@ type CliArguments =
     | [<AltCommandLine("-sf")>] SingeFile
     | AOT
     | [<MainCommand; ExactlyOnce; First>] File of file:string
+    | ProjectRef of projectReferences:string list
 
     interface IArgParserTemplate with
         member s.Usage =
@@ -23,6 +24,7 @@ type CliArguments =
             | AOT -> "Enable AOT-compilation"
             | SingeFile -> "Produce single file"
             | NoSelfContained -> "Don't publish as self-contained (with dotnet runtime included)"
+            | ProjectRef _ -> "Add project references to the script, so you can use classes from them"
 
 [<EntryPoint>]
 let main argv =
@@ -36,8 +38,9 @@ let main argv =
     let targetFramework = results.GetResult(CliArguments.Framework, defaultValue = "net6.0")
     let verbose =  match results.TryGetResult(CliArguments.Verbose) with | Some _ -> true |None -> false
     let preprocessor = FsxPreprocessor(verbose = verbose)
-    let sourceFile = preprocessor.AddSource(sourceFileName)
+    preprocessor.AddSource(sourceFileName) |> ignore
     preprocessor.Process()
+    results.GetResult(CliArguments.ProjectRef, defaultValue = []) |> List.iter preprocessor.AddProjectReference
 
     let sourceFiles = preprocessor.GetSources()
 
@@ -63,6 +66,13 @@ let main argv =
                 $"<Reference Include=\"{Path.GetFileNameWithoutExtension(pr)}\"><HintPath>{pr}</HintPath></Reference>"
                )
             |> fun x -> String.Join(Environment.NewLine, x)
+    let projectReferences = preprocessor.GetProjectReferences()
+    let projectReferencesList =
+        projectReferences
+            |> Array.map (fun projectReferences ->
+                $"<ProjectReference Include=\"{Path.GetFullPath(projectReferences)}\" />"
+               )
+            |> fun x -> String.Join(Environment.NewLine, x)
     let defineInteractive = true;
     let projectContent = $"""<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
@@ -71,6 +81,10 @@ let main argv =
     <TargetFramework>{targetFramework}</TargetFramework>
     {(if defineInteractive then  "<DefineConstants>$(DefineConstants);INTERACTIVE;COMPILED_INTERACTIVE</DefineConstants>" else String.Empty)}
   </PropertyGroup>
+
+  <ItemGroup>
+    {projectReferencesList}
+  </ItemGroup>
 
   <ItemGroup>
     {packageReferencesList}

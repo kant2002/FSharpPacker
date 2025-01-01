@@ -69,6 +69,10 @@ fspack FSharpPacker.Tests/Samples/LoadFile.fsx  -o test-single-file -r win-x64 -
 test-single-file\LoadFile.exe
 ```
 
+## Extensions
+
+You can specify project reference using `--projectref` option. There can be more then one project references.
+Also script now supported [DependencyManager.FsProj](https://github.com/ThisFunctionalTom/DependencyManager.FsProj) extension which allow you specify `#r "fsproj: test.fsproj"` inside FSX file.
 
 # Supported FSX directives
 
@@ -78,6 +82,7 @@ test-single-file\LoadFile.exe
 | #r "path\file.dll"     | :white_check_mark: | |
 | #r "nuget: package"     | :white_check_mark: | |
 | #r "nuget: package, version"     | :white_check_mark: | |
+| #r "fsproj: custom-path-search-hint"     | :white_large_square: | |
 | #load     | :white_check_mark: | |
 | #i "nuget: source-feed"     | :white_check_mark: | |
 | #quit     | :white_check_mark: | |

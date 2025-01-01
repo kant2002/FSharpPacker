@@ -112,6 +112,22 @@ public class UnitTest1
         Assert.AreEqual("https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet8/nuget/v3/index.json", packageSources[0]);
     }
     [TestMethod]
+    public void FsProjReferenceExtension()
+    {
+        var sourceFile = "Samples/FsProjReferenceExtension.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: false);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual("module FsProjReferenceExtension" + Environment.NewLine + "printfn \"Hello, world\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+        var assemblies = preprocessor.GetReferences();
+        Assert.AreEqual(0, assemblies.Length);
+        var projectReferences = preprocessor.GetProjectReferences();
+        Assert.AreEqual(1, projectReferences.Length);
+        Assert.AreEqual("test.fsproj", projectReferences[0]);
+    }
+    [TestMethod]
     public void LoadFile()
     {
         var sourceFile = "Samples/LoadFile.fsx";
