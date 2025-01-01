@@ -7,7 +7,7 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fspack</ToolCommandName>
-    <VersionPrefix>1.0.4</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <PackageId>FSharpPacker</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

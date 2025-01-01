@@ -38,6 +38,8 @@ OPTIONS:
                           Don't publish as self-contained (with dotnet runtime included)
     --singefile, -sf      Produce single file
     --aot, -aot           Enable AOT-compilation
+    --projectref [<projectReferences>...]
+                          Add project references to the script, so you can use classes from them
     --help                display this list of options.
 
 
