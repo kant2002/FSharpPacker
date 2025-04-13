@@ -93,6 +93,7 @@ let ParsePaths paths =
 type FsxLine =
     | SourceCode of string
     | Unsupported
+    | Skipped
     | IncludePath of seq<string>
     | IncludeFiles of seq<string>
     | IncludeReference of references: seq<string> * packages: seq<NugetReference> * projectReferences: seq<string>
@@ -151,6 +152,8 @@ let classifyLine (sourceFile: SourceFile) (normalizedLine: string) =
             let pathStrings = normalizedLine.Replace("#load ", "");
             let files = ParsePaths(pathStrings) |> Seq.map sourceFile.ResolveRelativePath
             IncludeFiles(files)
+        elif normalizedLine.StartsWith("#!") then
+            Skipped
         else
             SourceCode(normalizedLine)
     else SourceCode(normalizedLine)
@@ -161,6 +164,7 @@ let rec public ProcessLine verbose  state sourceFile line =
     match lineResult with
         | SourceCode(code) -> sourceFile.WriteLine(code)
         | Unsupported -> ()
+        | Skipped -> ()
         | AddNugetFeed(code) -> state.nugetSources <- Seq.append state.nugetSources [code]
         | IncludePath(files) -> sourceFile.AddIncludePaths(files)
         | IncludeFiles(files) -> for file in files do
