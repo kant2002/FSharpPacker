@@ -245,4 +245,15 @@ module Queue=
 
         CollectionAssert.AreEqual(new string[] { "WithNamespace.fsx", "WithNamespaceAndComments.fsx", "Loader.fsx", "MultipleLoadDirectivesFile.fsx" }, preprocessor.GetSources().Select(_ => Path.GetFileName(_.FileName)).ToArray());
     }
+    [TestMethod]
+    public void Shebang()
+    {
+        var sourceFile = "Samples/Shebang.fsx";
+        var preprocessor = new FsxPreprocessor(verbose: false);
+        preprocessor.AddSource(sourceFile);
+
+        preprocessor.Process();
+
+        Assert.AreEqual("module Shebang" + Environment.NewLine + Environment.NewLine + "printfn \"Hello, world!\"" + Environment.NewLine, preprocessor.GetSource(sourceFile));
+    }
 }
