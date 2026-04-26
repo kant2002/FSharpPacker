@@ -8,7 +8,7 @@ pkgs.buildDotnetModule rec {
 
   projectFile = "FSharpPacker.FSharp/FSharpPacker.FSharp.fsproj";
   testProjectFile = "FSharpPacker.Tests/FSharpPacker.Tests.csproj";
-  nugetDeps = ./deps.nix;
+  nugetDeps = ./deps.json;
 
   doCheck = false;
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_6_0;
