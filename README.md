@@ -13,12 +13,12 @@ dotnet tool install --global FSharpPacker
 
 Nix w/ [Flakes](https://nixos.wiki/wiki/Flakes)
 ```
-nix profile install github:kant2002/FSharpPacker
+nix profile install --extra-experimental-features "nix-command flakes" --impure github:kant2002/FSharpPacker
 ```
 
 Run without installing
 ```
-nix run github:kant2002/FSharpPacker -- --help
+nix run --extra-experimental-features "nix-command flakes" --impure github:kant2002/FSharpPacker -- --help
 ```
 
 # Usage
