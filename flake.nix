@@ -2,7 +2,7 @@
   description = "Tool for packaging FSX files as self-contained executables";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixpkgs.url = "nixpkgs/nixos-25.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 

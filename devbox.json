@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "dotnet-sdk@6.0",
+    "nuget-to-json@latest"
+  ],
+  "shell": {
+    "init_hook": null,
+    "scripts": {
+      "run_test": "dotnet run"
+    }
+  }
+}

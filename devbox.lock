@@ -1,0 +1,104 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "dotnet-sdk@6.0": {
+      "last_modified": "2024-11-16T04:25:12Z",
+      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#dotnet-sdk",
+      "source": "devbox-search",
+      "version": "6.0.427",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/p1m94qjsxr6jkzagj1r83wyllrw8wj2b-dotnet-sdk-6.0.427",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/p1m94qjsxr6jkzagj1r83wyllrw8wj2b-dotnet-sdk-6.0.427"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mi8lk7f9aqwakmb793wq1cn8q6z5iqjh-dotnet-sdk-6.0.427",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mi8lk7f9aqwakmb793wq1cn8q6z5iqjh-dotnet-sdk-6.0.427"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cg7f6ni6p44ykzpghp4p03vwqbr2dgm0-dotnet-sdk-6.0.427",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/cg7f6ni6p44ykzpghp4p03vwqbr2dgm0-dotnet-sdk-6.0.427"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2ashk2ig3vb8s54mpyc2w5dgr4saqcvj-dotnet-sdk-6.0.427",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2ashk2ig3vb8s54mpyc2w5dgr4saqcvj-dotnet-sdk-6.0.427"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-04-23T13:07:47Z",
+      "resolved": "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30?lastModified=1776949667&narHash=sha256-GMSVw35Q%2B294GlrTUKlx087E31z7KurReQ1YHSKp5iw%3D"
+    },
+    "nuget-to-json@latest": {
+      "last_modified": "2026-04-15T03:58:42Z",
+      "resolved": "github:NixOS/nixpkgs/975dad1a84d727dce241bb41b27191948fa5a956#nuget-to-json",
+      "source": "devbox-search",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/c3sm83k87pnaps09lhcxxhpiazx17wns-nuget-to-json",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/c3sm83k87pnaps09lhcxxhpiazx17wns-nuget-to-json"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8xv9mimsd2b9np2zknj0nh5r9vbfbxmz-nuget-to-json",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8xv9mimsd2b9np2zknj0nh5r9vbfbxmz-nuget-to-json"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cyrchhgwah9xdhdzc2zw5p3vk4inla3r-nuget-to-json",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/cyrchhgwah9xdhdzc2zw5p3vk4inla3r-nuget-to-json"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/x1xwxqcncl7r38gsnmgrxqjhxwl88xvs-nuget-to-json",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/x1xwxqcncl7r38gsnmgrxqjhxwl88xvs-nuget-to-json"
+        }
+      }
+    }
+  }
+}
